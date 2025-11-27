@@ -1,7 +1,8 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use App\Models\Post;
-use App\Models\Category;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 
@@ -9,107 +10,56 @@ class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::latest()->paginate(5);
-        return view('posts.index', compact('posts'));
+        $posts = Post::latest()->paginate(10);
+
+        $tags = Tag::withCount('posts')
+            ->orderByDesc('posts_count')
+            ->limit(10)
+            ->get();
+
+        return view('posts.index', compact('posts', 'tags'));
     }
-    public function create()
-    {
-        $categories = Category::orderBy('name')->get();
-        $tags = Tag::orderBy('name')->get();
-        // cara lain jika juga butuh tags:
-        //$tags = \App\Models\Tag::orderBy('name')->get();
-        return view('posts.create', compact('categories', 'tags'));
-    }
-    public function store(Request $request)
-    {
-        // 1. Validasi input
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'author' => 'nullable|string|max:100',
-            'category_id' => 'nullable|exists:categories,id',
-            'tags' => 'nullable|array',
-            'tags.*' => 'exists:tags,id',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
-        // 2. Ambil data utama
-        $data = $request->only(['title', 'content', 'author', 'category_id']);
-        // 3. Upload thumbnail jika ada
-        if ($request->hasFile('thumbnail')) {
-            $path = $request->file('thumbnail')->store('thumbnails', 'public');
-            $data['thumbnail'] = $path;
-        }
-        // 4. Simpan post baru
-        $post = \App\Models\Post::create($data);
-        // 5. Simpan relasi tags ke tabel pivot
-        if ($request->has('tags')) {
-            $post->tags()->sync($request->tags);
-        }
-        // 6. Redirect dengan pesan sukses
-        return redirect()
-            ->route('posts.index')
-            ->with('success', 'Berita berhasil ditambahkan!');
-    }
+
     public function show(Post $post)
     {
+        // Load relasi yang diperlukan
+        $post->load([
+            'category',           // Load kategori
+            'tags',               // Load tags
+            'approvedComments' => function ($query) {
+                $query->with('user')->latest(); // Load comments dengan user, urutkan terbaru
+            }
+        ]);
+
         return view('posts.show', compact('post'));
     }
-    public function edit($id)
-    {
-        // Ambil data post dengan relasi category dan tags
-        $post = Post::with(['category', 'tags'])->findOrFail($id);
-        // Ambil semua kategori dan tags untuk form
-        $categories = Category::all();
-        $tags = Tag::all();
-        return view('posts.edit', compact('post', 'categories', 'tags'));
-    }
 
-public function update(Request $request, $id)
+    /**
+     * Search posts by title, content, category, or tags
+     */
+    public function search(Request $request)
     {
-        // 1. Validasi input
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'author' => 'nullable|string|max:100',
-            'category_id' => 'nullable|exists:categories,id',
-            'tags' => 'nullable|array',
-            'tags.*' => 'exists:tags,id',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
-        // 2. Temukan post
-        $post = Post::findOrFail($id);
-        // 3. Ambil data utama
-        $data = $request->only(['title', 'content', 'author', 'category_id']);
-        // 4. Jika upload thumbnail baru
-        if ($request->hasFile('thumbnail')) {
-            // Hapus file lama (jika ada)
-            if ($post->thumbnail && \Storage::disk('public')->exists($post->thumbnail)) {
-                \Storage::disk('public')->delete($post->thumbnail);
-            }
-            // Upload file baru
-            $path = $request->file('thumbnail')->store('thumbnails', 'public');
-            $data['thumbnail'] = $path;
+        $query = $request->input('q');
+
+        // Validasi input search tidak boleh kosong
+        if (empty($query)) {
+            return redirect()->route('home')->with('error', 'Please enter a search keyword.');
         }
-        // 5. Update data post
-        $post->update($data);
-        // 6. Update relasi tags
-        if ($request->has('tags')) {
-            $post->tags()->sync($request->tags);
-        } else {
-            $post->tags()->detach(); // kalau tidak ada tag, kosongkan
-        }
-        // 7. Redirect dengan pesan sukses
-        return redirect()
-            ->route('posts.index')
-            ->with('success', 'Berita berhasil diperbarui!');
+
+        // Search di title, content, category name, dan tag name
+        $posts = Post::where('title', 'LIKE', "%{$query}%")
+            ->orWhere('content', 'LIKE', "%{$query}%")
+            ->orWhereHas('category', function ($q) use ($query) {
+                $q->where('name', 'LIKE', "%{$query}%");
+            })
+            ->orWhereHas('tags', function ($q) use ($query) {
+                $q->where('name', 'LIKE', "%{$query}%");
+            })
+            ->with(['category', 'tags']) // Eager loading untuk performa
+            ->latest()
+            ->paginate(10)
+            ->appends(['q' => $query]); // Maintain search query di pagination
+
+        return view('posts.search', compact('posts', 'query'));
     }
-
-
-    public function destroy(Post $post)
-    {
-        $post->delete();
-        return redirect()->route('posts.index')->with('success', 'Berita berhasil dihapus!');
-    }
-
-
 }

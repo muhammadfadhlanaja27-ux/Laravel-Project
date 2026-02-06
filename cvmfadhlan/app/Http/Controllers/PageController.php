@@ -28,7 +28,7 @@ class PageController extends Controller
                 'name' => 'Muhammad Fadhlan Pratama',
                 'roles' => ['Fotografer', 'Data Analsyt', 'UI/UX Designer', 'Web Developer'],
                 'description' => 'Passionate about capturing moments, crafting intuitive designs, and transforming data into meaningful insights that inspire better experiences.',
-                'image' => 'assets/img/profile/profile-2.webp'
+                'image' => 'assets/img/profile/profile-1.jpg'
             ],
             'stats' => [
                 ['icon' => 'bi-emoji-smile', 'number' => 232, 'label' => 'Happy Clients'],
@@ -46,12 +46,12 @@ class PageController extends Controller
         $data = array_merge($this->siteData, [
             'page_title' => 'About Us - Portfolio',
             'profile' => [
-                'name' => 'Marcus Thompson',
-                'profession' => 'Creative Director & Developer',
-                'email' => 'marcus@example.com',
-                'phone' => '+1 (555) 123-4567',
-                'location' => 'San Francisco, CA',
-                'image' => 'assets/img/profile/profile-square-3.webp',
+                'name' => 'Muhammad Fadhlan Pratama',
+                'profession' => 'Photographer & Data Analyst',
+                'email' => 'muhammadfadhlanaja27@gmail.com',
+                'phone' => '+62 8953 3274 0062',
+                'location' => 'Maleber Utara, Bandung',
+                'image' => 'assets/img/profile/profile-1.jpg',
                 'description' => 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.'
             ],
             'stats' => [
@@ -60,15 +60,15 @@ class PageController extends Controller
                 ['number' => '98%', 'label' => 'Client Satisfaction'],
             ],
             'details' => [
-                ['label' => 'Specialization', 'value' => 'UI/UX Design & Development'],
-                ['label' => 'Experience Level', 'value' => 'Senior Professional'],
-                ['label' => 'Education', 'value' => 'Computer Science, MIT'],
-                ['label' => 'Languages', 'value' => 'English, Spanish, French'],
+                ['label' => 'Specialization', 'value' => 'Photographer & Data Analysis'],
+                ['label' => 'Experience Level', 'value' => 'Junior'],
+                ['label' => 'Education', 'value' => 'Rekayasa Perangkat Lunak, SMKN 11 Bandung'],
+                ['label' => 'Languages', 'value' => 'English, Tagalog'],
             ],
             'skills' => [
-                ['name' => 'HTML/CSS', 'percentage' => 95],
-                ['name' => 'JavaScript', 'percentage' => 85],
-                ['name' => 'React', 'percentage' => 80],
+                ['name' => 'Photographer', 'percentage' => 95],
+                ['name' => 'Python', 'percentage' => 90],
+                ['name' => 'JavaScript', 'percentage' => 80],
                 ['name' => 'Node.js', 'percentage' => 75],
             ]
         ]);
@@ -80,7 +80,7 @@ class PageController extends Controller
     {
         $data = array_merge($this->siteData, [
             'page_title' => 'Resume - Portfolio',
-            'profile_image' => 'assets/img/profile/profile-square-2.webp',
+            'profile_image' => 'assets/img/profile/profile-1.jpg',
             'summary' => 'Driven software architect with expertise in developing scalable, high-performance enterprise solutions. Passionate about leveraging cutting-edge technologies to solve complex business challenges.',
             'contact_info' => [
                 ['icon' => 'bi-geo-alt', 'text' => '742 Evergreen Terrace, Springfield, MA 02101'],
@@ -157,28 +157,28 @@ class PageController extends Controller
                     'title' => 'Capturing Moments',
                     'category' => 'photography',
                     'category_name' => 'Photography',
-                    'image' => 'assets/img/portfolio/portfolio-portrait-1.webp',
+                    'image' => 'assets/img/portfolio/portofolio-portrait-1.jpg',
                     'link' => route('portfolio.detail', 1)
                 ],
                 [
                     'title' => 'Woodcraft Design',
                     'category' => 'design',
                     'category_name' => 'Web Design',
-                    'image' => 'assets/img/portfolio/portfolio-2.webp',
+                    'image' => 'assets/img/portfolio/portofolio-2.jpg',
                     'link' => route('portfolio.detail', 2)
                 ],
                 [
                     'title' => 'Classic Beauty',
                     'category' => 'automotive',
                     'category_name' => 'Automotive',
-                    'image' => 'assets/img/portfolio/portfolio-portrait-2.webp',
+                    'image' => 'assets/img/portfolio/portofolio-portrait-2.png',
                     'link' => route('portfolio.detail', 3)
                 ],
                 [
                     'title' => 'Natural Growth',
                     'category' => 'nature',
                     'category_name' => 'Nature',
-                    'image' => 'assets/img/portfolio/portfolio-portrait-4.webp',
+                    'image' => 'assets/img/portfolio/portofolio-portrait-4.jpg',
                     'link' => route('portfolio.detail', 4)
                 ],
                 [
@@ -244,17 +244,17 @@ class PageController extends Controller
                 [
                     'icon' => 'bi-geo-alt',
                     'title' => 'Our Location',
-                    'lines' => ['A108 Adam Street', 'New York, NY 535022']
+                    'lines' => ['No 101 Maleber Utara', 'Bandung, Jawa Barat']
                 ],
                 [
                     'icon' => 'bi-telephone',
                     'title' => 'Phone Number',
-                    'lines' => ['+1 5589 55488 55', '+1 6678 254445 41']
+                    'lines' => ['+62 8953 3274 0062']
                 ],
                 [
                     'icon' => 'bi-envelope',
                     'title' => 'Email Address',
-                    'lines' => ['info@example.com', 'contact@example.com']
+                    'lines' => ['muhammadfadhlanaja27@gmai.com']
                 ],
             ]
         ]);
